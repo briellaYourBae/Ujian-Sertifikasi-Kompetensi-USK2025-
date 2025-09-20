@@ -1,13 +1,15 @@
-FROM php:8.1-cli
+FROM php:8.2-cli
 
-# Install dependencies
+# Install dependencies + PHP extensions
 RUN apt-get update && apt-get install -y \
     unzip \
     git \
     curl \
     sqlite3 \
     libsqlite3-dev \
-    && docker-php-ext-install pdo pdo_sqlite
+    libzip-dev \
+    libicu-dev \
+    && docker-php-ext-install pdo pdo_sqlite zip intl
 
 # Install Composer
 COPY --from=composer:2.5 /usr/bin/composer /usr/bin/composer
