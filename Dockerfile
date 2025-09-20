@@ -1,4 +1,4 @@
-FROM php:8.2-cli
+FROM php:8.3-cli
 
 # Install dependencies + PHP extensions
 RUN apt-get update && apt-get install -y \
@@ -11,27 +11,17 @@ RUN apt-get update && apt-get install -y \
     libicu-dev \
     && docker-php-ext-install pdo pdo_sqlite zip intl
 
-# Install Composer
-COPY --from=composer:2.5 /usr/bin/composer /usr/bin/composer
+COPY --from=composer:2.7 /usr/bin/composer /usr/bin/composer
 
-# Set working directory
 WORKDIR /app
-
-# Copy project files
 COPY . .
 
-# Install PHP dependencies
 RUN composer install --optimize-autoloader --no-dev
 
-# Clear cache
 RUN php artisan config:clear && \
     php artisan cache:clear && \
     php artisan route:clear
 
-# Generate APP_KEY
 RUN php artisan key:generate --force
 
-EXPOSE 10000
-
-# Start Laravel
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=10000"]
+EXP
